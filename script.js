@@ -43,37 +43,34 @@ const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
 // Add material :shiny or flat, what color, what texture(s) to apply
 
-// The first material applied was visible without light. 
+// This material is visible without light, but is not affected by lights
 // const material = new THREE.MeshBasicMaterial({ color: 0x44aa88 });
 
-// The MeshBasicMaterial is not affected by lights. 
-// Let's change it to a MeshPhongMaterial which is affected by lights.
+// MeshPhongMaterial is affected by lights, but invisible without light.
 const material = new THREE.MeshPhongMaterial({ color: 0x44aa88 });
 
 // A Mesh in three.js represents the combination of three things
 // 1) Geometry, 2) Material, 3) position, orientation, and scale
-const cube = new THREE.Mesh(geometry, material);
 
+// I don't use this cube since added 3 cubes bellow
+// const cube = new THREE.Mesh(geometry, material);
 // And finally we add that mesh to the scene
-scene.add(cube);
+// scene.add(cube);
 
 // We can then render the scene by calling the renderer's render function
 // and passing it the scene and the camera
 renderer.render(scene, camera);
 
-// Loop animation via `requestAnimationFrame`.
-function render(time) {
-  time *= 0.001; // convert time to seconds
-
-  cube.rotation.x = time;
-  cube.rotation.y = time;
-
-  renderer.render(scene, camera);
-
-  requestAnimationFrame(render);
-}
-
-requestAnimationFrame(render);
+// I don't use this simplest animation since added animation for 3 cubes 
+// // Loop animation via `requestAnimationFrame`.
+// function render(time) {
+//   time *= 0.001; // convert time to seconds
+//   cube.rotation.x = time;
+//   cube.rotation.y = time;
+//   renderer.render(scene, camera);
+//   requestAnimationFrame(render);
+// }
+// requestAnimationFrame(render);
 
 // Add light source to the scene
 const color = 0xFFFFFF;
@@ -82,3 +79,50 @@ const light = new THREE.DirectionalLight(color, intensity);
 light.position.set(-1, 2, 4);
 scene.add(light);
 
+
+// Let's add 2 more cubes. We'll use the same geometry for each cube 
+// but make a different material so each cube can be a different color.
+
+// Function creates a new material with the specified color.
+// Then it creates a mesh using the specified geometry 
+// and adds it to the scene and sets its X position.
+
+function makeInstance(geometry, color, x) {
+  const material = new THREE.MeshPhongMaterial({color});
+ 
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+ 
+  cube.position.x = x;
+ 
+  return cube;
+}
+
+// Then we'll call it 3 times with 3 different colors and X positions 
+// saving the Mesh instances in an array.
+const cubes = [
+  makeInstance(geometry, 0x44aa88,  0),
+  makeInstance(geometry, 0x8844aa, -2),
+  makeInstance(geometry, 0xaa8844,  2),
+];
+
+// Finally we'll spin all 3 cubes in our render function.
+// We compute a slightly different rotation for each one.
+
+// Loop animation via `requestAnimationFrame`.
+function render(time) {
+  time *= 0.001; // convert time to seconds
+
+  cubes.forEach((cube, ndx) => {
+    const speed = 1 + ndx * .1;
+    const rot = time * speed;
+    cube.rotation.x = rot;
+    cube.rotation.y = rot;
+  });
+
+  renderer.render(scene, camera);
+
+  requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
