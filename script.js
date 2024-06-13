@@ -6,10 +6,23 @@ const canvas = document.querySelector("#c");
 // The renderer is the thing responsible for actually taking all the data
 // you provide and rendering it to the canvas.
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+renderer.setSize( window.innerWidth / 2, window.innerHeight /2);
+
+// Square renderer. It needs square aspect camera
+// renderer.setSize(500, 500);
+
+// To keep size of app, but render it at a lower resolution,
+// call setSize with false as `updateStyle` (3rd argument). Example:
+// setSize(window.innerWidth / 2, window.innerHeight / 2, false) 
+// That will render your app at half resolution, 
+// given that your < canvas > has 100 % width and height.
+
 
 // We'll create a PerspectiveCamera.
-const fov = 75;
-const aspect = 2; // the canvas default
+const fov = 75; // field of view vertical (degrees)
+// const aspect = 2; // the canvas default
+// const aspect = 1; // for square renderer
+const aspect = window.innerWidth / window.innerHeight; // to match renderer's aspect
 const near = 0.1;
 const far = 5;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -28,10 +41,11 @@ const boxHeight = 1;
 const boxDepth = 1;
 const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
-// Add material
-// shiny or flat, what color, what texture(s) to apply
+// Add material :shiny or flat, what color, what texture(s) to apply
+
 // The first material applied was visible without light. 
 // const material = new THREE.MeshBasicMaterial({ color: 0x44aa88 });
+
 // The MeshBasicMaterial is not affected by lights. 
 // Let's change it to a MeshPhongMaterial which is affected by lights.
 const material = new THREE.MeshPhongMaterial({ color: 0x44aa88 });
@@ -47,8 +61,7 @@ scene.add(cube);
 // and passing it the scene and the camera
 renderer.render(scene, camera);
 
-// To animate it we'll render inside a render loop 
-// using `requestAnimationFrame`.
+// Loop animation via `requestAnimationFrame`.
 function render(time) {
   time *= 0.001; // convert time to seconds
 
@@ -59,10 +72,13 @@ function render(time) {
 
   requestAnimationFrame(render);
 }
+
 requestAnimationFrame(render);
 
+// Add light source to the scene
 const color = 0xFFFFFF;
 const intensity = 3;
 const light = new THREE.DirectionalLight(color, intensity);
 light.position.set(-1, 2, 4);
 scene.add(light);
+
