@@ -17,17 +17,19 @@ renderer.setSize( window.innerWidth / 2, window.innerHeight /2);
 // That will render your app at half resolution, 
 // given that your < canvas > has 100 % width and height.
 
+// In some tutorials they add canvas to body by this line
+// document.body.appendChild( renderer.domElement ); 
 
 // We'll create a PerspectiveCamera.
-const fov = 75; // field of view vertical (degrees)
+const fov = 30; // field of view vertical (degrees)
 // const aspect = 2; // the canvas default
 // const aspect = 1; // for square renderer
 const aspect = window.innerWidth / window.innerHeight; // to match renderer's aspect
 const near = 0.1;
-const far = 5;
+const far = 10;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-camera.position.z = 2;
+camera.position.z = 6;
 
 // A Scene in three.js is the root of a form of scene graph.
 // Anything you want three.js to draw needs to be added to the scene.
